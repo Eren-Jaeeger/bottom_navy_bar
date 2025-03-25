@@ -28,8 +28,8 @@ class BottomNavyBar extends StatelessWidget {
     required this.items,
     required this.onItemSelected,
     this.curve = Curves.linear,
-  })  : assert(items.length >= 2 && items.length <= 5),
-        super(key: key);
+  }) : assert(items.length >= 2 && items.length <= 5),
+       super(key: key);
 
   /// The selected item is index. Changing this property will change and animate
   /// the item being selected. Defaults to zero.
@@ -92,7 +92,8 @@ class BottomNavyBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = backgroundColor ??
+    final bgColor =
+        backgroundColor ??
         (Theme.of(context).bottomAppBarTheme.color ?? Colors.white);
 
     return Container(
@@ -116,23 +117,24 @@ class BottomNavyBar extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
           child: Row(
             mainAxisAlignment: mainAxisAlignment,
-            children: items.map((item) {
-              var index = items.indexOf(item);
-              return GestureDetector(
-                onTap: () => onItemSelected(index),
-                child: _ItemWidget(
-                  item: item,
-                  iconSize: iconSize,
-                  isSelected: index == selectedIndex,
-                  backgroundColor: bgColor,
-                  itemCornerRadius: itemCornerRadius,
-                  animationDuration: animationDuration,
-                  itemPadding: itemPadding,
-                  curve: curve,
-                  showInactiveTitle: showInactiveTitle,
-                ),
-              );
-            }).toList(),
+            children:
+                items.map((item) {
+                  var index = items.indexOf(item);
+                  return GestureDetector(
+                    onTap: () => onItemSelected(index),
+                    child: _ItemWidget(
+                      item: item,
+                      iconSize: iconSize,
+                      isSelected: index == selectedIndex,
+                      backgroundColor: bgColor,
+                      itemCornerRadius: itemCornerRadius,
+                      animationDuration: animationDuration,
+                      itemPadding: itemPadding,
+                      curve: curve,
+                      showInactiveTitle: showInactiveTitle,
+                    ),
+                  );
+                }).toList(),
           ),
         ),
       ),
@@ -166,62 +168,63 @@ class _ItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Semantics semantic = Semantics(
+    return Semantics(
       container: true,
       selected: isSelected,
       child: AnimatedContainer(
-        width: (showInactiveTitle)
-            ? ((isSelected)
-                ? MediaQuery.of(context).size.width * 0.25
-                : MediaQuery.of(context).size.width * 0.2)
-            : ((isSelected)
-                ? MediaQuery.of(context).size.width * 0.3
-                : MediaQuery.of(context).size.width * 0.1),
-        height: double.maxFinite,
+        width:
+            (showInactiveTitle)
+                ? ((isSelected)
+                    ? MediaQuery.of(context).size.width * 0.25
+                    : MediaQuery.of(context).size.width * 0.2)
+                : ((isSelected)
+                    ? MediaQuery.of(context).size.width * 0.3
+                    : MediaQuery.of(context).size.width * 0.1),
+        height: 50,
         duration: animationDuration,
         curve: curve,
         decoration: BoxDecoration(
-          color: isSelected
-              ? (item.activeBackgroundColor ??
-                  item.activeColor.withOpacity(0.2))
-              : backgroundColor,
+          color: isSelected ? item.activeColor : backgroundColor,
           borderRadius: BorderRadius.circular(itemCornerRadius),
         ),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           physics: NeverScrollableScrollPhysics(),
           child: Container(
-            width: (showInactiveTitle)
-                ? ((isSelected)
-                ? MediaQuery.of(context).size.width * 0.25
-                : MediaQuery.of(context).size.width * 0.2)
-                : ((isSelected)
-                ? MediaQuery.of(context).size.width * 0.3
-                : MediaQuery.of(context).size.width * 0.1),
+            width:
+                (showInactiveTitle)
+                    ? ((isSelected)
+                        ? MediaQuery.of(context).size.width * 0.25
+                        : MediaQuery.of(context).size.width * 0.2)
+                    : ((isSelected)
+                        ? MediaQuery.of(context).size.width * 0.3
+                        : MediaQuery.of(context).size.width * 0.1),
             padding: EdgeInsets.symmetric(horizontal: 4),
             child: Row(
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 IconTheme(
                   data: IconThemeData(
                     size: iconSize,
-                    color: isSelected
-                        ? item.activeColor.withOpacity(1)
-                        : item.inactiveColor == null
+                    color:
+                        isSelected
+                            ? item.activeColor
+                            : item.inactiveColor == null
                             ? item.activeColor
                             : item.inactiveColor,
                   ),
                   child: item.icon,
                 ),
+                SizedBox(width: 3),
                 if (showInactiveTitle)
                   Flexible(
                     child: Container(
                       padding: itemPadding,
                       child: DefaultTextStyle.merge(
                         style: TextStyle(
-                          color: item.activeTextColor ?? item.activeColor,
+                          color: item.activeColor,
                           fontWeight: FontWeight.bold,
                         ),
                         maxLines: 1,
@@ -253,12 +256,6 @@ class _ItemWidget extends StatelessWidget {
         ),
       ),
     );
-    return item.tooltipText == null
-        ? semantic
-        : Tooltip(
-      message: item.tooltipText!,
-      child: semantic,
-    );
   }
 }
 
@@ -270,9 +267,6 @@ class BottomNavyBarItem {
     this.activeColor = Colors.blue,
     this.textAlign,
     this.inactiveColor,
-    this.activeTextColor,
-    this.activeBackgroundColor,
-    this.tooltipText,
   });
 
   /// Defines this item's icon which is placed in the right side of the [title].
@@ -292,16 +286,4 @@ class BottomNavyBarItem {
   ///
   /// This will take effect only if [title] it a [Text] widget.
   final TextAlign? textAlign;
-
-  /// The [title] color with higher priority than [activeColor]
-  ///
-  /// Will fallback to [activeColor] when null
-  final Color? activeTextColor;
-
-  /// The [BottomNavyBarItem] background color when active.
-  ///
-  /// Will fallback to [activeColor] with opacity 0.2 when null
-  final Color? activeBackgroundColor;
-  /// Will show a tooltip for the item if provided.
-  final String? tooltipText;
 }
